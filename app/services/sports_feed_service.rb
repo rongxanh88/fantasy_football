@@ -6,29 +6,32 @@ require 'pry'
 class SportsFeedService
 
   def initialize
-    
+    @login = ENV['sports_feed_login']
+    @pw    = ENV['sports_feed_pw']
+    @conn  = Faraday.new(url: "https://api.mysportsfeeds.com/v1.1/pull/nfl")
   end
 
   def full_season_schedule
-    sports_feed_login = 'rongxanh88'
-    sports_feed_pw    = 'avsrule'
     # https://api.mysportsfeeds.com/v1.1/pull/nfl/{season-name}/full_game_schedule
-    # authorization = "#{ENV['sports_feed_login']}:#{ENV['sports_feed_pw']}"
-    authorization = "#{sports_feed_login}:#{sports_feed_pw}"
+    authorization = "#{login}:#{pw}"
     encoded_authorization = Base64.encode64(authorization)
-    season_name = "2014-2017-regular"
+    season_name = "2014-2014-regular"
     url = "https://api.mysportsfeeds.com/v1.1/pull/nfl/#{season_name}/full_game_schedule.json"
-    # binding.pry
-    conn = Faraday.new(url: url)
+    # conn = Faraday.new(url: url)
 
     response = conn.get do |req|
       req.headers['Authorization'] = "Basic #{encoded_authorization}"
+      # req.headers['Accept-Encoding'] = 'gzip'
     end
 
-    JSON.parse(response.body)
+    #need to decode gzipped responses
+    JSON.parse(response.body, symbolize_names: true)
   end
-end
 
-service = SportsFeedService.new
-result = service.full_season_schedule
-binding.pry
+  def daily_player_stats(date)
+    url = "https://api.mysportsfeeds.com/v1.1/pull/nfl/{season-name}/daily_player_stats.{format}?fordate={for-date}"
+  end
+
+  private
+    attr_reader :login, :pw
+end
