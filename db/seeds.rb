@@ -2,6 +2,23 @@ require 'pry'
 
 class Seed
 
+  FANTASY_POINTS = {
+    "pass_tds": 4,
+    "pass_yards": 0.04,
+    "pass_ints": -1,
+    "rec_tds": 6,
+    "rec_yards": 0.1,
+    "receptions": 1,
+    "rush_tds": 6,
+    "rush_yards": 0.1,
+    "punt_ret_td": 6,
+    "kick_ret_td": 6,
+    "fum_lost": -1
+  }
+
+  # 300+ Passing Yards	3	0
+  # 100+ Yard Receiving Game	3	0
+
   def self.start
     schedule = GameSchedule.new
     schedule.store_schedule
@@ -24,7 +41,21 @@ class Seed
       puts "All stats for date: #{date} memoized\r"
     end
     puts "All stats done\r"
-    binding.pry
+
+    # players.each do |id, player|
+    #   binding.pry
+
+    #   football_player = FootballPlayer.new(
+    #     api_id: id, first_name: player.first_name, last_name: player.last_name,
+    #     position: player.position
+    #     )
+
+    #   player.stats.each do |stat|
+    #     expected_production = 0
+
+    #   end
+    # end
+    # binding.pry
   end
 end
 
