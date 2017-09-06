@@ -49,36 +49,38 @@ class Seed
   end
   
   def self.defense
-    seasons = ['2014-2014-regular', '2015-2015-regular', '2016-2016-regular']
-    service = SportsFeedService.new
-    defenses = {}
+    # seasons = ['2014-2014-regular', '2015-2015-regular', '2016-2016-regular']
+    # service = SportsFeedService.new
+    # defenses = {}
 
-    seasons.each do |season|
-      dfs_points = service.daily_fantasy_points(season)
+    # seasons.each do |season|
+    #   dfs_points = service.daily_fantasy_points(season)
 
-      dfs_all_players = dfs_points[:dailydfs][:dfsEntries][1][:dfsRows]
+    #   dfs_all_players = dfs_points[:dailydfs][:dfsEntries][1][:dfsRows]
 
 
-      dfs_all_players.each do |dfs_stat|
-        if dfs_stat[:player].nil?
-          defense_id = dfs_stat[:team][:ID]
-          if defenses[defense_id]
-            defense = defenses[defense_id]
-            defense.add_points(dfs_stat[:fantasyPoints])
-            defenses[defense_id] = defense
-          else
-            defense = DefenseCalculator.new(dfs_stat[:team])
-            defense.add_points(dfs_stat[:fantasyPoints])
-            defenses[defense_id] = defense
-          end
-        end
-      end
-    end
+    #   dfs_all_players.each do |dfs_stat|
+    #     if dfs_stat[:player].nil?
+    #       defense_id = dfs_stat[:team][:ID]
+    #       if defenses[defense_id]
+    #         defense = defenses[defense_id]
+    #         defense.add_points(dfs_stat[:fantasyPoints])
+    #         defenses[defense_id] = defense
+    #       else
+    #         defense = DefenseCalculator.new(dfs_stat[:team])
+    #         defense.add_points(dfs_stat[:fantasyPoints])
+    #         defenses[defense_id] = defense
+    #       end
+    #     end
+    #   end
+    # end
+    defenses = DefenseCalculator.get_defense_data
+    Defense.save_all(defenses)
 
-    defenses.each do |id, team|
-      avg_points = team.average_points
-      Defense.create!(api_id: id, name: team.name, expected_point_production: avg_points)
-    end
+    # defenses.each do |id, team|
+    #   avg_points = team.average_points
+    #   Defense.create!(api_id: id, name: team.name, expected_point_production: avg_points)
+    # end
   end
 
   # def self.current_season_schedule
