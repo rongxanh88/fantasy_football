@@ -80,7 +80,14 @@ class Seed
       Defense.create!(api_id: id, name: team.name, expected_point_production: avg_points)
     end
   end
+
+  # def self.current_season_schedule
+  #   schedule = GameSchedule.new
+  #   games = schedule.current_season_schedule
+  #   binding.pry
+  # end
 end
 
-Seed.start
-Seed.defense
+# Seed.start
+# Seed.defense
+# Seed.current_season_schedule

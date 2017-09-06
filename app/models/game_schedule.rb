@@ -18,4 +18,10 @@ class GameSchedule
       end
     end
   end
+
+  # def current_season_schedule
+  #   service = SportsFeedService.new
+  #   results = service.full_season_schedule('2017-2017-regular')
+  #   results[:fullgameschedule][:gameentry]
+  # end
 end
