@@ -2,23 +2,6 @@ require 'pry'
 
 class Seed
 
-  FANTASY_POINTS = {
-    "pass_tds": 4,
-    "pass_yards": 0.04,
-    "pass_ints": -1,
-    "rec_tds": 6,
-    "rec_yards": 0.1,
-    "receptions": 1,
-    "rush_tds": 6,
-    "rush_yards": 0.1,
-    "punt_ret_td": 6,
-    "kick_ret_td": 6,
-    "fum_lost": -1
-  }
-
-  # 300+ Passing Yards	3	0
-  # 100+ Yard Receiving Game	3	0
-
   def self.start
     schedule = GameSchedule.new
     schedule.store_schedule
@@ -42,21 +25,62 @@ class Seed
     end
     puts "All stats done\r"
 
-    # players.each do |id, player|
-    #   binding.pry
+    players.each do |id, player|
 
-    #   football_player = FootballPlayer.new(
-    #     api_id: id, first_name: player.first_name, last_name: player.last_name,
-    #     position: player.position
-    #     )
+      football_player = FootballPlayer.new(
+        api_id: id, first_name: player.first_name, last_name: player.last_name,
+        position: player.position
+        )
 
-    #   player.stats.each do |stat|
-    #     expected_production = 0
+      expected_production_list = []
+      player.stats.each do |stat|
+        expected_production = PlayerStats.calculate_expected_point_production(stat)
+        
+        expected_production_list << expected_production
+      end
 
-    #   end
-    # end
-    # binding.pry
+      avg_point_production = (expected_production_list.sum / expected_production_list.count.to_f).round(2)
+
+      football_player.update(expected_point_production: avg_point_production)
+      status = football_player.save
+      puts status
+    end
+
+  end
+  
+  def self.defense
+    seasons = ['2014-2014-regular', '2015-2015-regular', '2016-2016-regular']
+    service = SportsFeedService.new
+    defenses = {}
+
+    seasons.each do |season|
+      dfs_points = service.daily_fantasy_points(season)
+
+      dfs_all_players = dfs_points[:dailydfs][:dfsEntries][1][:dfsRows]
+
+
+      dfs_all_players.each do |dfs_stat|
+        if dfs_stat[:player].nil?
+          defense_id = dfs_stat[:team][:ID]
+          if defenses[defense_id]
+            defense = defenses[defense_id]
+            defense.add_points(dfs_stat[:fantasyPoints])
+            defenses[defense_id] = defense
+          else
+            defense = DefenseCalculator.new(dfs_stat[:team])
+            defense.add_points(dfs_stat[:fantasyPoints])
+            defenses[defense_id] = defense
+          end
+        end
+      end
+    end
+
+    defenses.each do |id, team|
+      avg_points = team.average_points
+      Defense.create!(api_id: id, name: team.name, expected_point_production: avg_points)
+    end
   end
 end
 
 Seed.start
+Seed.defense

@@ -4,6 +4,7 @@ class GameSchedule
   def initialize
     @games = []
     @seasons = ['2014-2014-regular', '2015-2015-regular', '2016-2016-regular']
+    # @seasons = ['2014-2014-regular'] truncated for testing
   end
 
   def store_schedule
@@ -15,9 +16,6 @@ class GameSchedule
       games.each do |game_details|
         @games << FootballGame.new(game_details)
       end
-      # @games = games.map do |game_details|
-      #   FootballGame.new(game_details)
-      # end
     end
   end
 end

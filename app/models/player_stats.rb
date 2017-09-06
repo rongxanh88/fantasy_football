@@ -1,6 +1,23 @@
 class PlayerStats
   attr_reader :pass_yards, :pass_tds, :pass_ints, :rush_yards, :rush_tds,
-              :receptions, :rec_yards, :fum_lost, :kick_ret_td, :punt_ret_td
+              :receptions, :rec_yards, :fum_lost, :kick_ret_td, :punt_ret_td,
+              :rec_tds
+
+  FANTASY_POINTS = {
+    "pass_tds": 4,
+    "pass_yards": 0.04,
+    "pass_ints": -1,
+    "rec_tds": 6,
+    "rec_yards": 0.1,
+    "receptions": 1,
+    "rush_tds": 6,
+    "rush_yards": 0.1,
+    "punt_ret_td": 6,
+    "kick_ret_td": 6,
+    "fum_lost": -1,
+    "pass_yards_300": 3,
+    "rush_or_rec_yards_100": 3
+  }
 
   def initialize(attrs)
     @pass_yards  = attrs[:PassYards]
@@ -8,6 +25,7 @@ class PlayerStats
     @pass_ints   = attrs[:PassInt]
     @rush_yards  = attrs[:RushYards]
     @rush_tds    = attrs[:RushTD]
+    @rec_tds     = attrs[:RecTD]
     @receptions  = attrs[:Receptions]
     @rec_yards   = attrs[:RecYards]
     @fum_lost    = attrs[:FumLost]
@@ -15,20 +33,33 @@ class PlayerStats
     @punt_ret_td = attrs[:PrTD]
   end
 
-end
+  def self.calculate_expected_point_production(stat)
+    expected_production = 0
+    expected_production += (stat.pass_tds[:"#text"].to_i * FANTASY_POINTS[:pass_tds])
+    expected_production += (stat.pass_yards[:"#text"].to_i * FANTASY_POINTS[:pass_yards])
+    expected_production += (stat.pass_ints[:"#text"].to_i * FANTASY_POINTS[:pass_ints])
+    expected_production += (stat.rec_tds[:"#text"].to_i * FANTASY_POINTS[:rec_tds])
+    expected_production += (stat.rec_yards[:"#text"].to_i * FANTASY_POINTS[:rec_yards])
+    expected_production += (stat.receptions[:"#text"].to_i * FANTASY_POINTS[:receptions])
+    expected_production += (stat.rush_tds[:"#text"].to_i * FANTASY_POINTS[:rush_tds])
+    expected_production += (stat.rush_yards[:"#text"].to_i * FANTASY_POINTS[:rush_yards])
+    expected_production += (stat.punt_ret_td[:"#text"].to_i * FANTASY_POINTS[:punt_ret_td])
+    expected_production += (stat.kick_ret_td[:"#text"].to_i * FANTASY_POINTS[:kick_ret_td])
+    expected_production += (stat.fum_lost[:"#text"].to_i * FANTASY_POINTS[:fum_lost])
 
-# 300+ Passing Yards	3	0
-# 100+ Yard Receiving Game	3	0
-# 2 Point Conversion	2	2
-# Sack	1	1
-# Interception	2	2
-# Fumble Recovery	2	2
-# Safety	2	2
-# Blocked Kick	2	2
-# 0 Pts Allowed	10	10
-# 1-6 Points Allowed	7	7
-# 7-13 Pts Allowed	4	4
-# 14-20 Pts Allowed	1	1
-# 21-27 Pts Allowed	0	0
-# 28-34 Pts Allowed	-1	-1
-# 35+ Pts Allowed	-4	-4
+    if (stat.pass_yards[:"#text"].to_i >= 300)
+      expected_production += FANTASY_POINTS[:pass_yards_300]
+    end
+    
+    if (stat.pass_yards[:"#text"].to_i >= 100)
+      expected_production += FANTASY_POINTS[:rush_or_rec_yards_100]
+    end
+    
+    if (stat.rush_yards[:"#text"].to_i >= 100)
+      expected_production += FANTASY_POINTS[:rush_or_rec_yards_100]
+    end
+    
+    expected_production
+  end
+
+end

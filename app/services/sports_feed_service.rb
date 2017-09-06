@@ -1,7 +1,6 @@
 require 'base64'
 require 'faraday'
 require 'json'
-require 'pry'
 
 class SportsFeedService
 
@@ -32,6 +31,13 @@ class SportsFeedService
     season = "#{year}-#{year}-regular"
     positions = 'qb,wr,rb,te'
     url = "/v1.1/pull/nfl/#{season}/daily_player_stats.json?fordate=#{date}&position=#{positions}"
+    response = conn.get(url)
+
+    JSON.parse(response.body, symbolize_names: true)
+  end
+
+  def daily_fantasy_points(season)
+    url = "/v1.1/pull/nfl/#{season}/daily_dfs.json"
     response = conn.get(url)
 
     JSON.parse(response.body, symbolize_names: true)
