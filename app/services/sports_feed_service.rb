@@ -1,7 +1,6 @@
 require 'base64'
 require 'faraday'
 require 'json'
-require 'pry'
 
 class SportsFeedService
 
@@ -38,7 +37,6 @@ class SportsFeedService
   end
 
   def daily_fantasy_points(season)
-    # season = "#{year}-#{year}-regular"
     url = "/v1.1/pull/nfl/#{season}/daily_dfs.json"
     response = conn.get(url)
 
