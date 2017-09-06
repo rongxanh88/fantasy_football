@@ -1,0 +1,2 @@
+class TightendsController < ApplicationController
+end

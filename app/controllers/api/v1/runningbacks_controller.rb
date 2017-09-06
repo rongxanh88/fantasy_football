@@ -1,0 +1,2 @@
+class RunningbacksController < ApplicationController
+end

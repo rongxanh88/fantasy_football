@@ -1,0 +1,2 @@
+class QuarterbacksController < ApplicationController
+end
