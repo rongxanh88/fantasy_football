@@ -51,12 +51,13 @@ class Seed
   def self.defense
     seasons = ['2014-2014-regular', '2015-2015-regular', '2016-2016-regular']
     service = SportsFeedService.new
+    defenses = {}
+
     seasons.each do |season|
       dfs_points = service.daily_fantasy_points(season)
 
       dfs_all_players = dfs_points[:dailydfs][:dfsEntries][1][:dfsRows]
 
-      defenses = {}
 
       dfs_all_players.each do |dfs_stat|
         if dfs_stat[:player].nil?
@@ -73,8 +74,13 @@ class Seed
         end
       end
     end
-    binding.pry
+
+    defenses.each do |id, team|
+      avg_points = team.average_points
+      Defense.create!(api_id: id, name: team.name, expected_point_production: avg_points)
+    end
   end
 end
 
+Seed.start
 Seed.defense

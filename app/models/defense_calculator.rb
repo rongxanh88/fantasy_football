@@ -13,6 +13,7 @@ class DefenseCalculator
   end
 
   def average_points
-    point_production_list.sum / point_production_list.count.to_f
+    total = point_production_list.sum { |num| num.to_f }
+    (total / point_production_list.count).round(2)
   end
 end
