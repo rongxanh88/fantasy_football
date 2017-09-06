@@ -1,0 +1,2 @@
+class Defense < ApplicationRecord
+end

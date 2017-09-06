@@ -37,6 +37,14 @@ class SportsFeedService
     JSON.parse(response.body, symbolize_names: true)
   end
 
+  def daily_fantasy_points(season)
+    # season = "#{year}-#{year}-regular"
+    url = "/v1.1/pull/nfl/#{season}/daily_dfs.json"
+    response = conn.get(url)
+
+    JSON.parse(response.body, symbolize_names: true)
+  end
+
   private
     attr_reader :conn
 end
