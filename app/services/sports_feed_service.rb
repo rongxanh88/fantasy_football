@@ -18,7 +18,6 @@ class SportsFeedService
   def full_season_schedule(season)
     url = "/v1.1/pull/nfl/#{season}/full_game_schedule.json"
     response = conn.get(url)
-    binding.pry
     JSON.parse(response.body, symbolize_names: true)
   end
   

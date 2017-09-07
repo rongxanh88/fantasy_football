@@ -90,6 +90,6 @@ class Seed
   # end
 end
 
-# Seed.start
-# Seed.defense
+Seed.start
+Seed.defense
 # Seed.current_season_schedule
