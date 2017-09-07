@@ -1,5 +1,5 @@
 class Api::V1::RunningbacksController < ApplicationController
   def index
-    @runningbacks = FootballPlayer.where(position: "RB")
+    @runningbacks = FootballPlayer.position("RB")
   end
 end
