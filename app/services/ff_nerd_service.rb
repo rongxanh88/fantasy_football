@@ -20,6 +20,15 @@ class FFNerdService
                                 .map { |player| player[:playerName] }
     end
 
+    def active_players_by_team(position)
+      url = "/service/players/json/#{api_key}/#{position}/"
+      response = conn.get(url)
+      result = JSON.parse(response.body, symbolize_names: true)
+      result = result[:Players].map do |player|
+        [player[:displayName], player[:team]]
+      end
+    end
+
     private
 
     attr_reader :api_key, :conn

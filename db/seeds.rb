@@ -9,19 +9,23 @@ class Seed
     dates = games_by_date.map {|game| game.date.gsub('-', '')}
     service = SportsFeedService.new
     players = {}
+    defenses = {}
     dates.each do |date|
-      player_stats = service.daily_player_stats(date)
-      stats = player_stats[:dailyplayerstats][:playerstatsentry]
+      # player_stats = service.daily_player_stats(date)
+      # stats = player_stats[:dailyplayerstats][:playerstatsentry]
 
-      stats.each do |stat|
-        player_id = stat[:player][:ID]
-        player = players[player_id] || Player.new(stat[:player])
-        player_stat = PlayerStats.new(stat[:stats])
-        player.stats << player_stat
-        players[player_id] = player
-        puts "Add player ID: #{player_id} stats\r"
-      end
-      puts "All stats for date: #{date} memoized\r"
+      # stats.each do |stat|
+      #   player_id = stat[:player][:ID]
+      #   player = players[player_id] || Player.new(stat[:player])
+      #   player_stat = PlayerStats.new(stat[:stats])
+      #   player.stats << player_stat
+      #   players[player_id] = player
+      #   puts "Add player ID: #{player_id} stats\r"
+      # end
+      # puts "All stats for date: #{date} memoized\r"
+
+      #seed defense
+      DefenseCalculator.get_defense_data(date)
     end
     puts "All stats done\r"
 
@@ -48,48 +52,24 @@ class Seed
 
   end
   
-  def self.defense
-    # seasons = ['2014-2014-regular', '2015-2015-regular', '2016-2016-regular']
-    # service = SportsFeedService.new
-    # defenses = {}
+  # def self.defense
+  #   defenses = DefenseCalculator.get_defense_data
+  #   Defense.save_all(defenses)
+  # end
 
-    # seasons.each do |season|
-    #   dfs_points = service.daily_fantasy_points(season)
-
-    #   dfs_all_players = dfs_points[:dailydfs][:dfsEntries][1][:dfsRows]
-
-
-    #   dfs_all_players.each do |dfs_stat|
-    #     if dfs_stat[:player].nil?
-    #       defense_id = dfs_stat[:team][:ID]
-    #       if defenses[defense_id]
-    #         defense = defenses[defense_id]
-    #         defense.add_points(dfs_stat[:fantasyPoints])
-    #         defenses[defense_id] = defense
-    #       else
-    #         defense = DefenseCalculator.new(dfs_stat[:team])
-    #         defense.add_points(dfs_stat[:fantasyPoints])
-    #         defenses[defense_id] = defense
-    #       end
-    #     end
-    #   end
-    # end
-    defenses = DefenseCalculator.get_defense_data
-    Defense.save_all(defenses)
-
-    # defenses.each do |id, team|
-    #   avg_points = team.average_points
-    #   Defense.create!(api_id: id, name: team.name, expected_point_production: avg_points)
-    # end
+  def self.update_teams
+    quarterbacks = FootballPlayer.where(position: "QB")
+    receivers    = FootballPlayer.where(position: "WR")
+    runningbacks = FootballPlayer.where(position: "RB")
+    tightends    = FootballPlayer.where(position: "TE")
+    FootballPlayer.update_teams("QB", quarterbacks)
+    FootballPlayer.update_teams("WR", receivers)
+    FootballPlayer.update_teams("RB", runningbacks)
+    FootballPlayer.update_teams("TE", tightends)
   end
 
-  # def self.current_season_schedule
-  #   schedule = GameSchedule.new
-  #   games = schedule.current_season_schedule
-  #   binding.pry
-  # end
 end
 
 Seed.start
-Seed.defense
-# Seed.current_season_schedule
+# Seed.defense
+Seed.update_teams

@@ -19,6 +19,20 @@ class FootballPlayer < ApplicationRecord
     end
   end
 
+  def self.update_teams(position, players)
+    service = FFNerdService.new
+    active_players_with_teams = service.active_players_by_team(position)
+
+    active_players_with_teams.each do |player, team|
+      fb_player = players.select { |plyr| plyr.full_name == player }
+      if !fb_player.empty?
+        fb_player[0].team = team
+        fb_player[0].save
+        puts "Updated #{fb_player[0].full_name}"
+      end
+    end
+  end
+
   def full_name
     first_name + " " + last_name
   end
