@@ -26,17 +26,15 @@ class SportsFeedService
     positions = 'qb,wr,rb,te'
     url = "/v1.1/pull/nfl/#{season}/daily_player_stats.json?fordate=#{date}&position=#{positions}"
     response = conn.get(url)
-
     JSON.parse(response.body, symbolize_names: true)
   end
 
   def daily_fantasy_points(date)
     season = parse_season_from(date)
-    binding.pry
     url = "/v1.1/pull/nfl/#{season}/daily_dfs.json?fordate=#{date}"
     response = conn.get(url)
-    binding.pry
-    JSON.parse(response.body, symbolize_names: true)
+    result = JSON.parse(response.body, symbolize_names: true)
+    result = result[:dailydfs]
   end
 
   private

@@ -33,6 +33,28 @@ class FootballPlayer < ApplicationRecord
     end
   end
 
+  def self.save_all_data(players)
+    players.each do |id, player|
+      football_player = FootballPlayer.new(
+        api_id: id, first_name: player.first_name, last_name: player.last_name,
+        position: player.position
+        )
+
+      expected_production_list = []
+      player.stats.each do |stat|
+        expected_production = PlayerStats.calculate_expected_point_production(stat)
+        
+        expected_production_list << expected_production
+      end
+
+      avg_point_production = (expected_production_list.sum / expected_production_list.count.to_f).round(2)
+
+      football_player.update(expected_point_production: avg_point_production)
+      status = football_player.save
+      puts status
+    end
+  end
+
   def full_name
     first_name + " " + last_name
   end
