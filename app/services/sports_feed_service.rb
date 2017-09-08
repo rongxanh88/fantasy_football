@@ -18,31 +18,39 @@ class SportsFeedService
   def full_season_schedule(season)
     url = "/v1.1/pull/nfl/#{season}/full_game_schedule.json"
     response = conn.get(url)
-    
     JSON.parse(response.body, symbolize_names: true)
   end
   
   def daily_player_stats(date)
-    year = date[0..3]
-    month = date[4..5]
-    if month == "01"
-      year = (year.to_i - 1).to_s
-    end
-    season = "#{year}-#{year}-regular"
+    season = parse_season_from(date)
     positions = 'qb,wr,rb,te'
     url = "/v1.1/pull/nfl/#{season}/daily_player_stats.json?fordate=#{date}&position=#{positions}"
     response = conn.get(url)
-
     JSON.parse(response.body, symbolize_names: true)
   end
 
-  def daily_fantasy_points(season)
-    url = "/v1.1/pull/nfl/#{season}/daily_dfs.json"
+  def daily_fantasy_points(date)
+    season = parse_season_from(date)
+    url = "/v1.1/pull/nfl/#{season}/daily_dfs.json?fordate=#{date}"
     response = conn.get(url)
-
-    JSON.parse(response.body, symbolize_names: true)
+    result = JSON.parse(response.body, symbolize_names: true)
+    result = result[:dailydfs]
   end
 
   private
     attr_reader :conn
+
+    def parse_season_from(date)
+      yr = date[0..3]
+      mnth = date[4..5]
+      season = ""
+      prev_yr = (yr.to_i - 1).to_s
+      nxt_yr = (yr.to_i + 1).to_s
+
+      mnth == "01" ? season += "#{prev_yr}-#{yr}" : season += "#{yr}-#{nxt_yr}"
+
+      season = "#{yr}" if (yr == "2014")
+
+      season += "-regular"
+    end
 end

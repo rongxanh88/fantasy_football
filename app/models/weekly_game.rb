@@ -1,0 +1,2 @@
+class WeeklyGame < ApplicationRecord
+end
