@@ -22,12 +22,6 @@ class SportsFeedService
   end
   
   def daily_player_stats(date)
-    # year = date[0..3]
-    # month = date[4..5]
-    # if month == "01"
-    #   year = (year.to_i - 1).to_s
-    # end
-    # season = "#{year}-#{year}-regular"
     season = parse_season_from(date)
     positions = 'qb,wr,rb,te'
     url = "/v1.1/pull/nfl/#{season}/daily_player_stats.json?fordate=#{date}&position=#{positions}"
@@ -41,7 +35,7 @@ class SportsFeedService
     binding.pry
     url = "/v1.1/pull/nfl/#{season}/daily_dfs.json?fordate=#{date}"
     response = conn.get(url)
-
+    binding.pry
     JSON.parse(response.body, symbolize_names: true)
   end
 
@@ -49,11 +43,16 @@ class SportsFeedService
     attr_reader :conn
 
     def parse_season_from(date)
-      year = date[0..3]
-      month = date[4..5]
-      if month == "01"
-        year = (year.to_i - 1).to_s
-      end
-      "#{year}-#{year}-regular"
+      yr = date[0..3]
+      mnth = date[4..5]
+      season = ""
+      prev_yr = (yr.to_i - 1).to_s
+      nxt_yr = (yr.to_i + 1).to_s
+
+      mnth == "01" ? season += "#{prev_yr}-#{yr}" : season += "#{yr}-#{nxt_yr}"
+
+      season = "#{yr}" if (yr == "2014")
+
+      season += "-regular"
     end
 end
