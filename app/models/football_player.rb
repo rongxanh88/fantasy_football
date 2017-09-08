@@ -6,9 +6,14 @@ class FootballPlayer < ApplicationRecord
 
   def self.position(position)
     players_with_stats = FootballPlayer.where(position: position)
-    service = FFNerdService.new
-    active_players = service.active_players_by_position(position)
-    injured_players = service.injured_players
+    service            = FFNerdService.new
+    active_players     = service.active_players_by_position(position)
+    injured_players    = service.injured_players
+    bye_weeks          = service.bye_weeks
+    current_week       = service.current_game_week
+
+    teams_on_bye = bye_weeks.select { |team| team[:byeWeek] == current_week }
+                            .map {|team| team[:team] }
 
     non_injured_active_players = active_players.reject do |name|
       injured_players.include?(name)
@@ -16,6 +21,10 @@ class FootballPlayer < ApplicationRecord
 
     players_with_stats.select do |player|
       non_injured_active_players.include?(player.full_name)
+    end
+
+    players_with_stats.reject do |player|
+      teams_on_bye.include?(player.team)
     end
   end
 

@@ -29,6 +29,21 @@ class FFNerdService
       end
     end
 
+    def bye_weeks
+      url = "/service/byes/json/#{api_key}/"
+      response = conn.get(url)
+      result = JSON.parse(response.body, symbolize_names: true)
+      result = result.map {|week, teams| teams }.flatten
+    end
+
+    #will change to get weather to modify player stats
+    def current_game_week
+      url = "/service/weather/json/#{api_key}/"
+      response = conn.get(url)
+      result = JSON.parse(response.body, symbolize_names: true)
+      result = result[:Week]
+    end
+
     private
 
     attr_reader :api_key, :conn
