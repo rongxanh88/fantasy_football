@@ -1,8 +1,10 @@
 {
   "name": "fantasy_football",
   "description": "",
-  "scripts": {
-  },
+  "scripts": {},
+  // "scripts": {
+  //   "postdeploy":
+  // }
   "env": {
     "ff_nerd_api_key": {
       "required": true
@@ -41,8 +43,7 @@
       "required": true
     }
   },
-  "formation": {
-  },
+  "formation": {},
   "addons": [
     "newrelic",
     "papertrail",
