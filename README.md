@@ -23,9 +23,6 @@ This API supplies five endpoints. The following endpoints are as follows:
 ```
 
 All endpoints return players or defenses with an ID, Name, Position, and Expected Point Production.
-
-
-
 ### Prerequisites
 
 The following are the minimum requirements for rails and ruby. Postgres must also be installed
@@ -54,7 +51,7 @@ Clone down the repository and run the following commands to setup the database.
 ```
 bundle install
 rake db:create
-rake db:migrate
+rake build:all
 ```
 
 Now run the figaro command, which creates the application.yml file. Then add the following ENV
@@ -71,12 +68,10 @@ sports_feed_pw: 'your pw'
 ff_nerd_api_key: 'your api key'
 ```
 
-Now, you can seed the database with
-```
-rake db:seed
-```
+The database can now be reseeded. However, when you ran the ```rake build:all``` command, it loaded the database that has been saved to
+version control.
 
-Once you are done seeding, you can run an instance of the app locally with
+You can run an instance of the app locally with
 ```
 rails server
 ```
@@ -107,6 +102,13 @@ Now hit one of the endpoints like localhost:3000/api/v1/quarterbacks.json to get
     }
   ]
 ```
+
+## Rake File
+In the ```./lib/build/``` directory, you will see a rake file.
+
+```rake build:all``` Drops the current database, loads from a pg_dump, then runs all rspec tests to make sure everything works.
+
+```rake migrate_and_seed``` Drops the dtatabase, runs all migrations, runs manually seeding, and then creates a DB backup.
 
 ## Running the tests
 
