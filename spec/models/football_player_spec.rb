@@ -10,4 +10,14 @@ RSpec.describe FootballPlayer, type: :model do
 
     it { should validate_uniqueness_of(:api_id) }
   end
+
+  describe "FootballPlayer Methods" do
+    it "returns a full name for a player" do
+      player = build(:football_player)
+      fn     = player.first_name
+      ln     = player.last_name
+
+      assert(player.full_name, fn + " " + ln)
+    end
+  end
 end
