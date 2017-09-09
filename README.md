@@ -134,3 +134,10 @@ This app is currently deployed live, on [Heroku](https://fantasy-football-api-17
 ## Authors
 
 * **Bao Nguyen** - *Initial work* - [GitHub](https://github.com/rongxanh88)
+
+## Current Build Status
+https://hakiri.io/github/rongxanh88/fantasy_football/master.svg
+https://travis-ci.org/rongxanh88/fantasy_football.svg?branch=add_travis_ci
+https://forthebadge.com/images/badges/built-with-love.svg
+https://forthebadge.com/images/badges/made-with-ruby.svg
+https://forthebadge.com/images/badges/winter-is-coming.svg
