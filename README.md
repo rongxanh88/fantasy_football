@@ -138,8 +138,8 @@ This app is currently deployed live, on [Heroku](https://fantasy-football-api-17
 * **Bao Nguyen** - *Initial work* - [GitHub](https://github.com/rongxanh88)
 
 ## Current Build Status
-https://hakiri.io/github/rongxanh88/fantasy_football/master.svg
-https://travis-ci.org/rongxanh88/fantasy_football.svg?branch=add_travis_ci
-https://forthebadge.com/images/badges/built-with-love.svg
-https://forthebadge.com/images/badges/made-with-ruby.svg
-https://forthebadge.com/images/badges/winter-is-coming.svg
+![build](https://travis-ci.org/rongxanh88/fantasy_football.svg?branch=add_travis_ci)
+![security](https://hakiri.io/github/rongxanh88/fantasy_football/master.svg)
+![love](https://forthebadge.com/images/badges/built-with-love.svg)
+![ruby](https://forthebadge.com/images/badges/made-with-ruby.svg)
+![winter](https://forthebadge.com/images/badges/winter-is-coming.svg)
