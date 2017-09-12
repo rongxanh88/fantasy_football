@@ -8,4 +8,10 @@ class Defense < ApplicationRecord
       Defense.create!(api_id: id, name: team.name, expected_point_production: avg_points)
     end
   end
+
+  def self.get_all
+    defenses = Defense.all
+    defenses.reject { |defense| defense.salary.nil? }
+  end
+
 end
