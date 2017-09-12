@@ -26,6 +26,10 @@ class FootballPlayer < ApplicationRecord
     players_with_stats.reject do |player|
       teams_on_bye.include?(player.team)
     end
+
+    players_with_stats.reject do |player|
+      player.salary == nil
+    end
   end
 
   def self.update_teams(position, players)
