@@ -4,4 +4,5 @@ json.receivers @receivers.each do |receiver|
   json.last_name receiver.last_name
   json.position receiver.position
   json.expected_point_production receiver.expected_point_production
+  json.salary receiver.salary
 end
