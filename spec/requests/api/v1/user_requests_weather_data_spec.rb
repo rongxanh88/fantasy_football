@@ -7,7 +7,6 @@ RSpec.describe "Weather Data", :type => :request do
       get "/api/v1/weather.json"
       result = JSON.parse(response.body, symbolize_names: true)
       weather_attrs = result[:weatherData][0].count
-      binding.pry
       expect(response).to have_http_status(200)
       expect(weather_attrs).to eq(9)
     end
