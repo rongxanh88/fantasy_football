@@ -7,23 +7,9 @@ class Api::V1::SalariesController < ApplicationController
 
     contents.each do |row|
       if row[:position] != "DST"
-        full_name = row[:name].split(' ')
-        first_name = full_name[0]
-        last_name = full_name[1]
-
-        player = FootballPlayer.find_by(first_name: first_name, last_name: last_name)
-
-        if player
-          player.salary = row[:salary]
-          player.save
-        end
+        FootballPlayer.update_player_salary(row[:name], row[:salary])
       elsif row[:position] == "DST"
-        defense = Defense.find_by(name: row[:name].chop)
-
-        if defense
-          defense.salary = row[:salary]
-          defense.save
-        end
+        Defense.update_defense_salary(row[:name].chop, row[:salary])
       end
     end
 
@@ -35,4 +21,5 @@ class Api::V1::SalariesController < ApplicationController
     def csv_params
       params.require(:salaryData)
     end
+
 end

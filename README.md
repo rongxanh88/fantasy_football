@@ -8,7 +8,7 @@ This API currently supports scoring and lineup format for Draftkings only.
 
 ## Getting Started
 
-This API supplies five endpoints. The following endpoints are as follows:
+This API supplies seven endpoints. The following endpoints are as follows:
 
 ```
 /api/v1/quarterbacks.json
@@ -20,9 +20,35 @@ This API supplies five endpoints. The following endpoints are as follows:
 /api/v1/tightends.json
 
 /api/v1/defenses.json
+
+/api/v1/weather.json
+
+/api/v1/salaries
 ```
 
-All endpoints return players or defenses with an ID, Name, Position, and Expected Point Production.
+All endpoints return players or defenses with an ID, Name, Position, Salary, and Expected Point Production.
+
+The Weather endpoint returns weather forecasts for all of the current week's games.
+
+Example
+```
+{
+  "isDome": "0",
+  "low": "61",
+  "high": "72",
+  "forecast": "Mostly Cloudy",
+  "windSpeed": "4",
+  "windChill": "66",
+  "imageLink": "https://www.fantasyfootballnerd.com/images/weather/31/28.gif",
+  "awayTeam": "HOU",
+  "homeTeam": "CIN"
+}
+```
+
+The last endpoint ```/api/v1/salaries``` is a POST route. This is configured to accept CSV file uploads to the server that contain DraftKings salary data.
+In order to post to it, use a form with a file input field type to submit data to this endpoint. Make sure the send the post request with the file
+encapsulated in a JavaScript FormData object.
+
 ### Prerequisites
 
 The following are the minimum requirements for rails and ruby. Postgres must also be installed
@@ -80,25 +106,28 @@ Now hit one of the endpoints like localhost:3000/api/v1/quarterbacks.json to get
 ```
   "quarterbacks": [
     {
-      "id": "7549",
-      "first_name": "Tom",
-      "last_name": "Brady",
+      "id": "7916",
+      "first_name": "Derek",
+      "last_name": "Carr",
       "position": "QB",
-      "expected_point_production": "24.59"
+      "expected_point_production": "19.89",
+      "salary": "6700"
     },
     {
-      "id": "7641",
-      "first_name": "Drew",
-      "last_name": "Brees",
+      "id": "6114",
+      "first_name": "Joe",
+      "last_name": "Flacco",
       "position": "QB",
-      "expected_point_production": "25.87"
+      "expected_point_production": "19.7",
+      "salary": "5500"
     },
     {
-      "id": "7457",
-      "first_name": "Teddy",
-      "last_name": "Bridgewater",
+      "id": "7181",
+      "first_name": "Chad",
+      "last_name": "Henne",
       "position": "QB",
-      "expected_point_production": "15.44"
+      "expected_point_production": "9.57",
+      "salary": "4300"
     }
   ]
 ```
@@ -108,7 +137,7 @@ In the ```./lib/build/``` directory, you will see a rake file.
 
 ```rake build:all``` Drops the current database, loads from a pg_dump, then runs all rspec tests to make sure everything works.
 
-```rake migrate_and_seed``` Drops the dtatabase, runs all migrations, runs manually seeding, and then creates a DB backup.
+```rake migrate_and_seed``` Drops the database, runs all migrations, runs manually seeding, and then creates a DB backup.
 
 ## Running the tests
 
@@ -116,6 +145,8 @@ Run all rspec tests with the following command.
 ```
 rspec
 ```
+At the moment, almost all API endpoint testing is skipped due to changing conditions that auto filter out the results. In order
+for testing to work, I'll have to implement stubbing to return the testing data.
 
 ### Break down into end to end tests
 

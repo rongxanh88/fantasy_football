@@ -5,30 +5,44 @@ class FootballPlayer < ApplicationRecord
   validates :api_id, uniqueness: true
 
   def self.position(position)
-    players_with_stats = FootballPlayer.where(position: position)
-    service            = FFNerdService.new
-    active_players     = service.active_players_by_position(position)
-    injured_players    = service.injured_players
-    bye_weeks          = service.bye_weeks
-    current_week       = service.current_game_week
+    players_with_stats         = FootballPlayer.where(position: position)
+    service                    = FFNerdService.new
+    active_players             = service.active_players_by_position(position)
+    injured_players            = service.injured_players
+    bye_weeks                  = service.bye_weeks
+    current_week, weather_data = service.current_game_week
 
     teams_on_bye = bye_weeks.select { |team| team[:byeWeek] == current_week }
-                            .map {|team| team[:team] }
+                            .map { |team| team[:team] }
 
     non_injured_active_players = active_players.reject do |name|
       injured_players.include?(name)
     end
 
-    players_with_stats.select do |player|
+    players = players_with_stats.select do |player|
       non_injured_active_players.include?(player.full_name)
     end
 
-    players_with_stats.reject do |player|
+    players = players.reject do |player|
       teams_on_bye.include?(player.team)
     end
 
-    players_with_stats.reject do |player|
-      player.salary == nil
+    players = players.reject do |player|
+      player.salary.nil? || player.team.nil?
+    end
+
+    players = players.reject do |player|
+      flag = false
+      team = player.team
+      games = weather_data.select do |weather_game|
+        weather_game.away_team == team || weather_game.home_team == team
+      end
+  
+      game = games[0]
+      current_dt = DateTime.now
+      game_time = DateTime.parse(game.game_date + " " + game.game_time + " " + "EST")
+      comparison = current_dt <=> game_time
+      flag = true if comparison > 0
     end
   end
 
@@ -65,6 +79,18 @@ class FootballPlayer < ApplicationRecord
       football_player.update(expected_point_production: avg_point_production)
       status = football_player.save
       puts status
+    end
+  end
+
+  def self.update_player_salary(full_name, salary)
+    split_name = full_name.split(' ')
+    first_name = split_name[0]
+    last_name = split_name[1]
+    player = FootballPlayer.find_by(first_name: first_name, last_name: last_name)
+
+    if player
+      player.salary = salary
+      player.save
     end
   end
 
