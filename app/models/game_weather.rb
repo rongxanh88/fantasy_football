@@ -15,4 +15,10 @@ class GameWeather
     @wind_speed = attrs[:windSpeed]
     @image_link = attrs[:mediumImg]
   end
+
+  def self.weather_data
+    service = FFNerdService.new
+    current_week, weather_data = service.current_game_week
+    weather_data
+  end
 end

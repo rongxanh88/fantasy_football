@@ -31,16 +31,15 @@ class FootballPlayer < ApplicationRecord
       player.salary.nil? || player.team.nil?
     end
 
-    players.reject do |player|
-      current_dt = DateTime.now
+    players = players.reject do |player|
+      flag = false
       team = player.team
-
       games = weather_data.select do |weather_game|
         weather_game.away_team == team || weather_game.home_team == team
       end
-
+  
       game = games[0]
-      flag = false
+      current_dt = DateTime.now
       game_time = DateTime.parse(game.game_date + " " + game.game_time + " " + "EST")
       comparison = current_dt <=> game_time
       flag = true if comparison > 0

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'api/v1/receivers', to: 'api/v1/receivers#index'
   get 'api/v1/tightends', to: 'api/v1/tightends#index'
   get 'api/v1/defenses', to: 'api/v1/defenses#index'
+  get 'api/v1/weather', to: 'api/v1/weather#index'
 
   post 'api/v1/salaries', to: 'api/v1/salaries#index'
 end
