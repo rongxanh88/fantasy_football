@@ -41,7 +41,10 @@ class FFNerdService
       url = "/service/weather/json/#{api_key}/"
       response = conn.get(url)
       result = JSON.parse(response.body, symbolize_names: true)
-      result = result[:Week]
+      weather_data = result[:Games].map do |home_team, weather_data|
+        GameWeather.new(weather_data)
+      end
+      return result[:Week], weather_data
     end
 
     private

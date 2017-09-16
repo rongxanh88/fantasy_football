@@ -11,7 +11,7 @@ class Seed
     index = 0
 
     dates.each do |date|
-      Player.get_player_data(date, players)
+      PlayerImport.get_player_data(date, players)
       puts "All stats for date: #{date} memoized\r"
       index += 1
       sleep(1)

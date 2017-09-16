@@ -1,4 +1,4 @@
-class Player
+class PlayerImport
   attr_reader :id, :last_name, :first_name, :position
   attr_accessor :stats
 

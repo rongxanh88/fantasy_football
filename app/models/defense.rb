@@ -14,4 +14,13 @@ class Defense < ApplicationRecord
     defenses.reject { |defense| defense.salary.nil? }
   end
 
+  def self.update_defense_salary(defense_name, salary)
+    defense = Defense.find_by(name: defense_name)
+    
+    if defense
+      defense.salary = salary
+      defense.save
+    end
+  end
+
 end
